@@ -1,30 +1,32 @@
 import './style.css';
 
-function getRandomNumber(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const boardSize = 4;
+const gameBoard = document.getElementById('game-board');
 
-let randomNumber = getRandomNumber(1, 16);
-
-const holes = [...document.querySelectorAll('.hole')];
-
-function start() {
-  holes[randomNumber].classList.add('with-goblin');
-}
-
-window.addEventListener('load', () => {
-  start();
-})
-
-
-function changeHole() {
-  for (let elem of holes) {
-    if (elem.classList.contains('with-goblin')) {
-      elem.classList.remove('with-goblin');
-    }
+if (gameBoard) {
+  for (let i = 0; i < boardSize ** 2; i++) {
+    const hole = document.createElement('div');
+    hole.classList.add('hole');
+    gameBoard.appendChild(hole);
   }
-  
-  start();
 }
 
-setInterval(changeHole, 1000);
+const holes = Array.from(document.querySelectorAll('.hole'));
+
+function goblinImg(index, number) {
+  if (index !== -1) {
+    holes[index].classList.remove('with-goblin');
+  }
+  const goblinImgCell = holes[number];
+  goblinImgCell.classList.add('with-goblin');
+}
+
+setInterval(() => {
+  const index = holes.findIndex((item) => item.className.includes('with-goblin'));
+  let randomNumber = Math.floor(Math.random() * holes.length);
+  if (randomNumber === index) {
+    randomNumber = Math.floor(Math.random() * holes.length);
+  } else {
+    goblinImg(index, randomNumber);
+  }
+}, 1000);
